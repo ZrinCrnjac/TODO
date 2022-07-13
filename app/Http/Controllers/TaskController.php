@@ -29,15 +29,6 @@ class TaskController extends Controller
         $this->tasks = $tasks;
     }
 
-    public function showUser($id){
-
-        //return User::findOrFail($id);
-
-        return view('user.profile', [
-            'user' => User::findOrFail($id)
-        ]);
-    }
-
     /**
      * @param Request $request
      * @return Response
@@ -59,14 +50,16 @@ class TaskController extends Controller
         $this->validate($request, [
             'name'=> 'required|max:255',
             'description'=>'required|max:255',
+            'done' => 'required|max:5',
         ]);
 
         $request->user()->tasks()->create([
             'name'=>$request->name,
             'description'=>$request->description,
+            'done'=>$request->done,
         ]);
 
-        return redirect('/tasks');
+        return redirect('/');
     }
 
     /**
@@ -79,7 +72,7 @@ class TaskController extends Controller
 
         $task->delete();
 
-        return redirect('/tasks');
+        return redirect('/');
     }
 
     public function edit (Task $task){
@@ -97,6 +90,27 @@ class TaskController extends Controller
     public function update(Request $request, Task $task){
         $this->authorize('checkTaskOwner', $task);
         $task->update($request->all());
-        return redirect('/tasks');
+        return redirect('/');
+    }
+
+    public function done(Request $request, Task $task){
+        $this->authorize('checkTaskOwner', $task);
+        $task->update(['done'=>'true',
+        ]);
+        return redirect('/');
+    }
+
+    public function doneTasks(Request $request){
+        return view('done', [
+            'tasks' => $this->tasks->forUser($request->user()),
+            'user' => $request->user()
+        ]);
+    }
+
+    public function undone(Request $request, Task $task){
+        $this->authorize('checkTaskOwner', $task);
+        $task->update(['done'=>'false',
+        ]);
+        return redirect('/');
     }
 }

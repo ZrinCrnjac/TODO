@@ -20,7 +20,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['middleware' => ['web']], function () {
 
-    Route::get('/tasks', 'App\Http\Controllers\TaskController@index');
+    Route::get('/', 'App\Http\Controllers\TaskController@index');
 
     Route::post('/task', 'App\Http\Controllers\TaskController@store');
 
@@ -29,5 +29,11 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/task/edit/{task}', 'App\Http\Controllers\TaskController@edit');
 
     Route::patch('/task/{task}', 'App\Http\Controllers\TaskController@update');
+
+    Route::post('/task/{task}', 'App\Http\Controllers\TaskController@done');
+
+    Route::get('/task/done', 'App\Http\Controllers\TaskController@doneTasks');
+
+    Route::post('/task/undone/{task}', 'App\Http\Controllers\TaskController@undone');
   
 });

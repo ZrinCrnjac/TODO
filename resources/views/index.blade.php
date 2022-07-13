@@ -26,6 +26,8 @@
                         </div>
                     </div>
 
+                    <input type="hidden" name="done" id="task-done" class="form-control" value="false">
+
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-6">
                             <button type="submit" class="btn btn-primary">
@@ -49,9 +51,11 @@
                             <th>Opis</th>
                             <th>Uredi</th>
                             <th>Obriši</th>
+                            <th>Odrađen</th>
                         </thead>
                         <tbody>
                             @foreach ($tasks as $task)
+                            @if($task->done == 'false')
                                 <tr>
                                     <td class="table-text"><div>{{$task->name}}</div></td>
                                     <td class="table-text"><div>{{$task->description}}</div></td>
@@ -74,10 +78,20 @@
                                             </button>
                                         </form>
                                     </td>
+                                    <td>
+                                        <form action="{{url('task/' . $task->id)}}" method="POST">
+                                            {{ csrf_field() }}
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fa fa-btn fa-plus"></i>Odrađen
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
+                            @endif
                             @endforeach
                         </tbody>
                     </table>
+                    <a href="{{url('task/done')}}">Gotovi</a>
                 </div>
             </div>
 
